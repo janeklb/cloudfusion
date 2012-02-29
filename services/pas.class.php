@@ -4,7 +4,7 @@
  * 	Product Advertising Service (http://aws.amazon.com/associates)
  *
  * Version:
- * 	2010.11.26
+ * 	2011-08-01
  *
  * See Also:
  * 	[Amazon PAS](http://aws.amazon.com/associates)
@@ -97,7 +97,7 @@ class AmazonPAS extends CFRuntime
 	 */
 	public function __construct($key = null, $secret_key = null, $assoc_id = null)
 	{
-		$this->api_version = '2010-06-01';
+		$this->api_version = '2011-08-01';
 
 		if (!$key && !defined('AWS_KEY'))
 		{
@@ -114,10 +114,12 @@ class AmazonPAS extends CFRuntime
 			throw new PAS_Exception('No Amazon Associates ID was passed into the constructor, nor was it set in the AWS_ASSOC_ID constant.');
 		}
 
-		$options = array('key' => $key, 'secret' => $secret_key);
-		return parent::__construct($options);
+		$this->assoc_id = $assoc_id ? $assoc_id : AWS_ASSOC_ID;
 		
-// 		return parent::__construct($key, $secret_key, null, $assoc_id);
+		return parent::__construct(array(
+			'key' => $key,
+			'secret' => $secret_key
+		));
 	}
 
 
@@ -257,7 +259,6 @@ class AmazonPAS extends CFRuntime
 		$query['Service'] = 'AWSECommerceService';
 		$query['SignatureMethod'] = 'HmacSHA256';
 		$query['SignatureVersion'] = 2;
-		$query['AssociateTag'] = $this->associateTag;
 		$query['Timestamp'] = gmdate($this->util->konst($this->util, 'DATE_FORMAT_ISO8601'), time() + $this->adjust_offset);
 		$query['Version'] = $this->api_version;
 
