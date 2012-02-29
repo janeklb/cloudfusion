@@ -114,7 +114,10 @@ class AmazonPAS extends CFRuntime
 			throw new PAS_Exception('No Amazon Associates ID was passed into the constructor, nor was it set in the AWS_ASSOC_ID constant.');
 		}
 
-		return parent::__construct($key, $secret_key, null, $assoc_id);
+		$options = array('key' => $key, 'secret' => $secret_key);
+		return parent::__construct($options);
+		
+// 		return parent::__construct($key, $secret_key, null, $assoc_id);
 	}
 
 
@@ -254,6 +257,7 @@ class AmazonPAS extends CFRuntime
 		$query['Service'] = 'AWSECommerceService';
 		$query['SignatureMethod'] = 'HmacSHA256';
 		$query['SignatureVersion'] = 2;
+		$query['AssociateTag'] = $this->associateTag;
 		$query['Timestamp'] = gmdate($this->util->konst($this->util, 'DATE_FORMAT_ISO8601'), time() + $this->adjust_offset);
 		$query['Version'] = $this->api_version;
 
